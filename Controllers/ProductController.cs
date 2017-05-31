@@ -27,14 +27,14 @@ namespace Sample.Api.Models
         [Route("v1/products")]
         public IActionResult Get()
         {
-            return Ok(_context.Products.ToList());
+            return Ok(_context.Products.OrderBy(x => x.Title).ToList());
         }
 
         [HttpGet]
         [Route("v1/products/{skip}/{take}")]
         public IActionResult Get(int skip, int take)
         {
-            return Ok(_context.Products.Skip(skip).Take(take).ToList());
+            return Ok(_context.Products.OrderBy(x => x.Title).Skip(skip).Take(take).ToList());
         }
 
         [HttpPut]
