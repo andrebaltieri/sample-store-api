@@ -79,7 +79,7 @@ namespace Sample.Api
 
             app.UseMvc();
 
-            context.Customers.Add(new Customer { Id = Guid.NewGuid(), FirstName = "André", LastName = "Baltieri", Document = "99999999999", Email = "hello@balta.io", Birthdate = DateTime.Now.AddYears(-31), Username = "andrebaltieri", Password = "andrebaltieri" });
+            context.Customers.Add(new Customer { Id = Guid.NewGuid(), FirstName = "André", LastName = "Baltieri", Document = "99999999999", Email = "hello@balta.io", Birthdate = DateTime.Now.AddYears(-31), Username = "andrebaltieri", Password = "andrebaltieri", Role = "User" });
             context.SaveChanges();
         }
     }

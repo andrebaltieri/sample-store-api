@@ -16,11 +16,13 @@ namespace Sample.Api.Models
 {
     public class AccountController : Controller
     {
+        private readonly DataContext _context;
         private readonly JwtIssuerOptions _jwtOptions;
         private readonly JsonSerializerSettings _serializerSettings;
 
-        public AccountController(IOptions<JwtIssuerOptions> jwtOptions)
+        public AccountController(IOptions<JwtIssuerOptions> jwtOptions, DataContext context)
         {
+            _context = context;
             _jwtOptions = jwtOptions.Value;
             ThrowIfInvalidOptions(_jwtOptions);
 
@@ -35,7 +37,7 @@ namespace Sample.Api.Models
         [AllowAnonymous]
         public async Task<IActionResult> Post([FromForm] User user)
         {
-            var identity = await GetClaimsIdentity(user.Username, user.Password);
+            var identity = await GetClaimsIdentity(_context, user.Username, user.Password);
             if (identity == null)
                 return BadRequest("Usuário ou senha inválidos");
 
@@ -89,28 +91,16 @@ namespace Sample.Api.Models
         private static long ToUnixEpochDate(DateTime date)
           => (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
 
-        private static Task<ClaimsIdentity> GetClaimsIdentity(string username, string password)
+        private static Task<ClaimsIdentity> GetClaimsIdentity(DataContext context, string username, string password)
         {
-            if (username == "andrebaltieri" &&
-                password == "andrebaltieri")
+            var user = context.Customers.FirstOrDefault(x => x.Username == username && x.Password == password);
+            if (user != null)
             {
                 return Task.FromResult(new ClaimsIdentity(
                     new GenericIdentity(username, "Token"),
                     new[]
                     {
-                        new Claim("Store", "User")
-                    }));
-            }
-
-            if (username == "batman" &&
-                password == "batman")
-            {
-                return Task.FromResult(new ClaimsIdentity(
-                    new GenericIdentity(username, "Token"),
-                    new[]
-                    {
-                        new Claim("Store", "Admin"),
-                        new Claim("Store", "User")
+                        new Claim("Store", user.Role)
                     }));
             }
 
