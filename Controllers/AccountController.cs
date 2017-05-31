@@ -35,7 +35,7 @@ namespace Sample.Api.Models
         [HttpPost]
         [Route("v1/authenticate")]
         [AllowAnonymous]
-        public async Task<IActionResult> Post([FromForm] User user)
+        public async Task<IActionResult> Post([FromBody] User user)
         {
             var identity = await GetClaimsIdentity(_context, user.Username, user.Password);
             if (identity == null)
