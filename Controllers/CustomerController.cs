@@ -3,6 +3,7 @@ using System.Linq;
 using Sample.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Sample.Api.Models
 {
@@ -16,6 +17,7 @@ namespace Sample.Api.Models
 
         [HttpPost]
         [Route("v1/customers")]
+        [AllowAnonymous]
         public IActionResult Post([FromBody]Customer customer)
         {
             _context.Customers.Add(customer);
@@ -25,9 +27,11 @@ namespace Sample.Api.Models
 
         [HttpGet]
         [Route("v1/customers")]
+        [Authorize(Policy = "Admin")]
         public IActionResult Get()
         {
-            return Ok(_context.Customers.ToList());
+            var user = User.Identity.Name;
+            return Ok(new { user = user, Data = _context.Customers.ToList() });
         }
 
         [HttpGet]
