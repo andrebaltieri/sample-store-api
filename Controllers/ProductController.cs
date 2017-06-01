@@ -41,7 +41,7 @@ namespace Sample.Api.Models
         [Route("v1/products/{id}")]
         public IActionResult GetById(Guid id)
         {
-            return Ok(_context.Products.Find(id));
+            return Ok(_context.Products.Where(x=>x.Id == id).FirstOrDefault());
         }
 
         [HttpPut]
