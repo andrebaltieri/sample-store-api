@@ -27,11 +27,16 @@ namespace Sample.Api.Models
 
         [HttpGet]
         [Route("v1/customers")]
-        [Authorize(Policy = "Admin")]
         public IActionResult Get()
         {
-            var user = User.Identity.Name;
-            return Ok(new { user = user, Data = _context.Customers.ToList() });
+            return Ok(_context.Customers.ToList());
+        }
+
+        [HttpGet]
+        [Route("v1/customers/{id}")]
+        public IActionResult GetById(Guid id)
+        {
+            return Ok(_context.Customers.Find(id));
         }
 
         [HttpGet]
