@@ -37,6 +37,13 @@ namespace Sample.Api.Models
             return Ok(_context.Products.OrderBy(x => x.Title).Skip(skip).Take(take).ToList());
         }
 
+        [HttpGet]
+        [Route("v1/products/{id}")]
+        public IActionResult GetById(Guid id)
+        {
+            return Ok(_context.Products.Find(id));
+        }
+
         [HttpPut]
         [Route("v1/products/{id}")]
         public IActionResult Put(Guid id, [FromBody]Product product)
